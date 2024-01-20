@@ -4,7 +4,84 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Playground — Complete Intro to Vue 3</title>
   </head>
-  <body></body>
+  <body>
+    <div id="app">
+      <ul>
+        <li v-for="character in list">
+          {{character.name}}-{{character.role}}-{{character.sex}}
+          <button @click="favorite(character)">favorite</button>
+        </li>
+      </ul>
+      <p v-for="(stat, type) in statistics">{{type}}: {{stat}}</p>
+      <input type="text" v-model="inputedCharacter" />
+      <button @click="addCharacter">Add</button>
+      <p v-if="favorites.length == 0">No Favorites</p>
+      <ul>
+        <li v-for="fav in favorites">{{fav}}</li>
+      </ul>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const { createApp } = Vue;
+      const app = createApp({
+        data() {
+          return {
+            list: [
+              { name: "Jim", role: "Sales", sex: "Male" },
+              { name: "Pam", role: "Reception", sex: "Female" },
+              { name: "Michael", role: "Boss", sex: "Male" },
+              { name: "Dwight", role: "Sales", sex: "Male" },
+              { name: "Oscar", role: "Accounting", sex: "Male" },
+              { name: "Angela", role: "Accounting", sex: "Female" },
+            ],
+            favorites: [],
+            inputedCharacter: "",
+          };
+        },
+        computed: {
+          statistics() {
+            const sex = ["Male", "Female"];
+
+            const stats = {
+              Male: 0,
+              Female: 0,
+            };
+
+            this.list.forEach((character) => {
+              sex.forEach((sex) => {
+                if (character.sex.indexOf(sex) > -1) {
+                  stats[sex] += 1;
+                }
+              });
+            });
+
+            return stats;
+          },
+          femaleEmployees() {
+            let arr = [];
+            this.list.map((i) => {
+              i.sex === "Female" ? arr.push(i) : "";
+            });
+            return arr;
+          },
+        },
+        watch: {
+          list() {
+            console.log(this.list.length());
+          },
+        },
+        methods: {
+          favorite(character, e) {
+            this.favorites.push(character);
+          },
+          addCharacter() {
+            this.list.push(this.inputedCharacter);
+          },
+        },
+      });
+      app.mount("#app");
+    </script>
+  </body>
 </html>
